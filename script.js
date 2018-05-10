@@ -40,8 +40,12 @@ function loadPdf(url) {
 }
 
 function loadImage(url) {
-  document.body.innerHTML = '<img src="' + url + '">';
-  elementAddEventListeners(document.getElementsByTagName('img')[0], url, 'load');
+  $(function() {
+    const viewer = new ImageViewer();
+    viewer.show(url);
+    const image = document.getElementsByClassName('iv-large-image')[0];
+    elementAddEventListeners(image, url, 'load');
+  });
 }
 
 function loadVideo(url) {
@@ -60,7 +64,6 @@ function loadAudio(url) {
 
 function elementAddEventListeners(element, url, success_type) {
   element.addEventListener(success_type, function() {
-    element.style.opacity = 1;
     document.body.style.background = '#4c4c4c';
   });
   element.addEventListener('error', function() {
