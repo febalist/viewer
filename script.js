@@ -1,27 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
   const query = URI(location.href).search(true);
   const url = query.url;
-  const name = query.name || URI(url).path().split('/').pop();
-  const extension = name.split('.').pop();
-  document.title = name;
+  if (url) {
+    const name = query.name || URI(url).path().split('/').pop();
+    const extension = name.split('.').pop();
+    document.title = name;
 
-  if (extension) {
-    if (extension == 'pdf') {
-      loadPdf(url);
-    } else if (['jpg', 'jpeg', 'png', 'gif', 'ico', 'bmp'].indexOf(extension) >= 0) {
-      loadImage(url);
-    } else if (['mp4', 'mpeg4', 'ogv', '3gp', 'webm', 'mkv', 'avi'].indexOf(extension) >= 0) {
-      loadVideo(url);
-    } else if (['mp3', 'flac', 'wav'].indexOf(extension) >= 0) {
-      loadAudio(url);
-    } else if (['ppt', 'pptx', 'doc', 'docx', 'dotx', 'xls', 'xlsx', 'xltx'].indexOf(extension) >= 0) {
-      loadMsOffice(url);
-    } else if (['ods', 'sxc', 'csv', 'tsv'].indexOf(extension) >= 0) {
-      loadZohoSheet(url, name);
-    } else
+    if (extension) {
+      if (extension == 'pdf') {
+        loadPdf(url);
+      } else if (['jpg', 'jpeg', 'png', 'gif', 'ico', 'bmp'].indexOf(extension) >= 0) {
+        loadImage(url);
+      } else if (['mp4', 'mpeg4', 'ogv', '3gp', 'webm', 'mkv', 'avi'].indexOf(extension) >= 0) {
+        loadVideo(url);
+      } else if (['mp3', 'flac', 'wav'].indexOf(extension) >= 0) {
+        loadAudio(url);
+      } else if (['ppt', 'pptx', 'doc', 'docx', 'dotx', 'xls', 'xlsx', 'xltx'].indexOf(extension) >= 0) {
+        loadMsOffice(url);
+      } else if (['ods', 'sxc', 'csv', 'tsv'].indexOf(extension) >= 0) {
+        loadZohoSheet(url, name);
+      } else {
+        loadGoogleDocs(url);
+      }
+    } else {
       loadGoogleDocs(url);
-  } else
-    loadGoogleDocs(url);
+    }
+  } else {
+    document.body.style.background = '#FFF';
+    document.body.innerHTML = '<br>Usage: <code>https://febalist.github.io/viewer/?url={URL}&name={FILENAME}</code>';
+  }
 });
 
 function loadPdf(url) {
@@ -58,17 +65,19 @@ function elementAddEventListeners(element, url, success_type) {
 }
 
 function loadGoogleDocs(url) {
-  if (inIframe())
+  if (inIframe()) {
     redirect('https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(url));
-  else
+  } else {
     redirect('https://docs.google.com/viewer?url=' + encodeURIComponent(url));
+  }
 }
 
 function loadMsOffice(url) {
-  if (inIframe())
+  if (inIframe()) {
     redirect('https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url));
-  else
+  } else {
     redirect('https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(url));
+  }
 }
 
 function loadZohoSheet(url, name) {
