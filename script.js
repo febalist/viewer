@@ -15,20 +15,20 @@ document.addEventListener('DOMContentLoaded', function() {
     } else if (['mp3', 'flac', 'wav'].indexOf(extension) >= 0) {
       loadAudio(url);
     } else if (['ppt', 'pptx', 'doc', 'docx', 'dotx', 'xls', 'xlsx', 'xltx'].indexOf(extension) >= 0) {
-      loadFrameMsOffice(url);
+      loadMsOffice(url);
     } else if (['ods', 'sxc', 'csv', 'tsv'].indexOf(extension) >= 0) {
-      loadFrameZohoSheet(url, name);
+      loadZohoSheet(url, name);
     } else
-      loadFrameGoogleDocs(url);
+      loadGoogleDocs(url);
   } else
-    loadFrameGoogleDocs(url);
+    loadGoogleDocs(url);
 });
 
 function loadPdf(url) {
   if (PDFObject.supportsPDFs) {
     PDFObject.embed(url, 'body');
   } else {
-    loadFrameGoogleDocs(url);
+    loadGoogleDocs(url);
   }
 }
 
@@ -53,26 +53,26 @@ function elementAddEventListeners(element, url, success_type) {
   });
   element.addEventListener('error', function() {
     document.body.innerHTML = '';
-    loadFrameGoogleDocs(url);
+    loadGoogleDocs(url);
   });
 }
 
-function loadFrameGoogleDocs(url) {
+function loadGoogleDocs(url) {
   if (inIframe())
-    loadFrame('https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(url));
+    redirect('https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(url));
   else
     redirect('https://docs.google.com/viewer?url=' + encodeURIComponent(url));
 }
 
-function loadFrameMsOffice(url) {
+function loadMsOffice(url) {
   if (inIframe())
-    loadFrame('https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url));
+    redirect('https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url));
   else
     redirect('https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(url));
 }
 
-function loadFrameZohoSheet(url, name) {
-  loadFrame('https://sheet.zoho.com/sheet/view.do?&name=' + encodeURIComponent(name) + '&url=' + encodeURIComponent(url));
+function loadZohoSheet(url, name) {
+  redirect('https://sheet.zoho.com/sheet/view.do?&name=' + encodeURIComponent(name) + '&url=' + encodeURIComponent(url));
 }
 
 function loadFrame(url) {
@@ -92,6 +92,13 @@ function loadFrame(url) {
   reloadFrame();
 }
 
+function redirect(url) {
+  location.href = url;
+  setTimeout(function() {
+    redirect(url);
+  }, loadingTimeout());
+}
+
 function loadingTimeout() {
   let timeout = 2000;
   if (window.performance && window.performance.timing) {
@@ -99,13 +106,6 @@ function loadingTimeout() {
     timeout = Math.max(timeout, loadDuration * 2);
   }
   return timeout;
-}
-
-function redirect(url) {
-  location.href = url;
-  setTimeout(function() {
-    redirect(url);
-  }, loadingTimeout());
 }
 
 function inIframe() {
