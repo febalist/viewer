@@ -45,14 +45,14 @@ function loadImage(url) {
 }
 
 function loadVideo(url) {
-  document.body.innerHTML = '<video controls playsinline src="' + url + '"></video>';
+  document.body.innerHTML = '<video preload controls playsinline src="' + url + '"></video>';
   const video = document.getElementsByTagName('video')[0];
   const player = new Plyr(video);
   elementAddEventListeners(video, url, 'canplay');
 }
 
 function loadAudio(url) {
-  document.body.innerHTML = '<audio controls src="' + url + '">Haru</audio>';
+  document.body.innerHTML = '<audio preload controls src="' + url + '">Haru</audio>';
   const audio = document.getElementsByTagName('audio')[0];
   const player = new Plyr(audio);
   elementAddEventListeners(audio, url, 'canplay');
@@ -60,7 +60,8 @@ function loadAudio(url) {
 
 function elementAddEventListeners(element, url, success_type) {
   element.addEventListener(success_type, function() {
-    document.body.style.background = '#525659';
+    element.style.opacity = 1;
+    document.body.style.background = '#4c4c4c';
   });
   element.addEventListener('error', function() {
     document.body.innerHTML = '';
