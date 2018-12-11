@@ -32,7 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function loadPdf(url) {
-  redirect('https://mozilla.github.io/pdf.js/web/viewer.html?file=' + encodeURIComponent(url));
+  //redirect('https://mozilla.github.io/pdf.js/web/viewer.html?file=' + encodeURIComponent(url));
+  if (PDFObject.supportsPDFs) {
+    PDFObject.embed(url, 'body');
+  } else {
+    loadGoogleDocs(url);
+  }
 }
 
 function loadImage(url) {
